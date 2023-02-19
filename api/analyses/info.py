@@ -6,10 +6,10 @@ import numpy as np
 
 class Info:
     """
-        Information analysis:
+        information analysis:
         
         column names, null values, data-types,
-        memory usage, dataset size
+        memory usage, and dataset size
     """
     def __init__(self, url: str):
         self.url = url
@@ -25,6 +25,11 @@ class Info:
         """
             perform info statistics
         """
+        if self.df is None:
+            self._read_url()
+                      
+        # TODO: what if the dataset is a pandas series?
+        
         cols = list(self.df.columns)
         rows = self.df.shape[0]
         
@@ -35,6 +40,7 @@ class Info:
         
         result = {
             "columns": [],
+            "shape": [0, 0],
             "memoryUsageMB": 0
         }
         
@@ -45,7 +51,8 @@ class Info:
                 "dtype": dtypes[i]
             }
             result["columns"].append(feat_info)
-            result["memoryUsageMB"] = mem_use_mb
-
+        
+        result["shape"][0], result["shape"][1] = rows, len(cols)
+        result["memoryUsageMB"] = mem_use_mb
         return result
         

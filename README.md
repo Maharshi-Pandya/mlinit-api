@@ -14,6 +14,11 @@ there will be 4 endpoints as of now:
     for dataset summary statistics (**mean**, **standard deviation**, etc...)
 
 
+- `/dup?apiKey=<your_api_key_here>`
+
+    for getting the number of duplicate rows in the dataset
+    
+
 - `/corr?apiKey=<your_api_key_here>`
 
     for analyzing linear correlation between dataset columns

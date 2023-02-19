@@ -1,6 +1,5 @@
 # imports
 import http
-import json
 from flask import Flask, request, jsonify
 from firebase_admin import firestore, initialize_app, credentials, storage
 
@@ -8,6 +7,7 @@ from firebase_admin import firestore, initialize_app, credentials, storage
 from utils import crypt
 from project_creds import creds
 from analyses import info as dataset_info
+from analyses import des as dataset_des
 
 # init flask and firebase admin
 app = Flask(__name__)
@@ -59,6 +59,7 @@ def check_api_key_valid(api_key: str, api_coll_name: str, users_coll_name: str) 
 
 # ------------------- routes -----------------------
 
+# ------------------- INFORMATION ------------------
 @app.route("/info", methods=["POST"])
 def info():
     url_params = request.args
@@ -89,7 +90,46 @@ def info():
         
         response = {
             "datasetInfo": result,
-            "URL": dataset_url,
+            "statusCode": http.HTTPStatus.OK
+        }
+        
+        return jsonify(response), http.HTTPStatus.OK
+    
+    else:
+        return jsonify(response), http.HTTPStatus.BAD_REQUEST
+
+
+# -------------- DESCRIBE -----------------------
+@app.route("/des", methods=["POST"])
+def des():
+    url_params = request.args
+    api_key = url_params.get("apiKey", type=str)
+    
+    # default response
+    response = {
+        "error": "unauthorized",
+        "statusCode": http.HTTPStatus.BAD_REQUEST
+    }
+    
+    if check_api_key_valid(api_key, "apiKeys", "users"):
+        try:
+            req_body = request.json
+            dataset_url = req_body["URL"]
+            
+            # got the url, do something with it
+            summ = dataset_des.Describe(dataset_url)
+            summ._read_url()
+            result = summ.perform_des()
+            
+        except Exception as e:
+            response = {
+                "error": "bad request",
+                "statusCode": http.HTTPStatus.BAD_REQUEST
+            }
+            return jsonify(response), http.HTTPStatus.BAD_REQUEST
+        
+        response = {
+            "datasetSummary": result,
             "statusCode": http.HTTPStatus.OK
         }
         
