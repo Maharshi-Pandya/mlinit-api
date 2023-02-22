@@ -37,9 +37,9 @@ class Duplicate:
         difference = rows - dup_rows
         result = {
             "shapeBefore": [rows, cols],
-            "duplicateRows": dup_rows,
+            "duplicateRowsCount": dup_rows,
             "difference": difference,
-            "shapeAfter": [dup_rows, dup_cols]
+            "shapeAfter": [difference, dup_cols]
         }
         
         return result
