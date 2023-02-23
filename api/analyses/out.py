@@ -70,3 +70,40 @@ class Outliers:
                 result["columns"].append(feat_out)
 
             return result
+        
+        elif method == "quantiles":
+            upper_outliers = [0 for _ in range(feats_len)]
+            lower_outliers = [0 for _ in range(feats_len)]
+
+            for i, feat in enumerate(num_features):
+                q1 = self.df[feat].quantile(q=0.25)
+                q3 = self.df[feat].quantile(q=0.75)
+                
+                # interquantile range
+                iqr = q3 - q1
+
+                lower_limit = q1 - (1.5 * iqr)
+                upper_limit = q3 + (1.5 * iqr)
+
+                a = self.df[self.df[feat] < lower_limit].shape[0]
+                b = self.df[self.df[feat] > upper_limit].shape[0]
+
+                lower_outliers[i] = a
+                upper_outliers[i] = b
+                
+            # json response
+            result = {
+                "columns": [],
+                "shape": [rows, cols]
+            }
+            
+            for i, feat in enumerate(num_features):
+                feat_out = {
+                    "name": feat,
+                    "outliersLower": lower_outliers[i],
+                    "outliersUpper": upper_outliers[i] 
+                }
+                result["columns"].append(feat_out)
+            
+            return result
+       
