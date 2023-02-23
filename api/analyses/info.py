@@ -4,6 +4,8 @@
 import pandas as pd
 import numpy as np
 
+from utils import web
+
 class Info:
     """
         information analysis:
@@ -19,7 +21,8 @@ class Info:
         """
             create dataframe from the url
         """
-        self.df = pd.read_csv(self.url)
+        f = web.read_dataset_from_url(self.url)
+        self.df = pd.read_csv(f)
         
     def perform_info(self):
         """

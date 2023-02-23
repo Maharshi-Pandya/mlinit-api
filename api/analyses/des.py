@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 
+from utils import web
 
 class Describe:
     """
@@ -22,7 +23,8 @@ class Describe:
         """
             create the dataframe from url
         """
-        self.df = pd.read_csv(self.url)
+        f = web.read_dataset_from_url(self.url)
+        self.df = pd.read_csv(f)
     
     def perform_des(self):
         """

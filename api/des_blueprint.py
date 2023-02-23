@@ -30,6 +30,7 @@ def des():
             result = summ.perform_des()
             
         except Exception as e:
+            print(e)
             response = {
                 "error": "bad request",
                 "statusCode": http.HTTPStatus.BAD_REQUEST
