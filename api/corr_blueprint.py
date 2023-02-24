@@ -2,14 +2,14 @@ import http
 from flask import Blueprint, jsonify, request
 
 from utils import firebase as fbutil
-from analyses import des as dataset_des
+from analyses import corr as dataset_corr
 
 # information blueprint
-des_bp = Blueprint("des_bp", __name__)
+corr_bp = Blueprint("corr_bp", __name__)
 
 # route
-@des_bp.route("/", methods=["POST"])
-def des():
+@corr_bp.route("/", methods=["POST"])
+def correlation():
     url_params = request.args
     api_key = url_params.get("apiKey", type=str)
     
@@ -25,9 +25,9 @@ def des():
             dataset_url = req_body["URL"]
             
             # got the url, do something with it
-            summ = dataset_des.Describe(dataset_url)
+            summ = dataset_corr.Correlation(dataset_url)
             summ._read_url()
-            result = summ.perform_des()
+            result = summ.perform_corr()
             
         except Exception as e:
             response = {
@@ -37,7 +37,7 @@ def des():
             return jsonify(response), http.HTTPStatus.BAD_REQUEST
         
         response = {
-            "datasetSummary": result,
+            "datasetCorrelation": result,
             "statusCode": http.HTTPStatus.OK
         }
         
